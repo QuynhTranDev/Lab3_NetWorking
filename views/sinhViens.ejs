@@ -22,6 +22,9 @@
                 <td><%= sinhVien.name %></td>
                 <td>
                     <a href="/sinhvien/edit/<%= sinhVien._id %>">Edit</a>
+                    <form action="/sinhvien/delete/<%= sinhVien._id %>" method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
                 </td>
             </tr>
             <% }) %>
@@ -39,7 +42,7 @@
     </form>
 
 <!-- Nếu sinhVienToEdit không tồn tại, hiển thị form thêm sinh viên -->
-    <% } else { %>
+    <% }  else { %>
     <h2>Thêm Sinh Viên</h2>
     <form action="/sinhvien" method="POST">
         <label for="id">ID:</label>

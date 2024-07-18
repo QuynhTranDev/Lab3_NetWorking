@@ -109,57 +109,69 @@
 // module.exports=router;
 
 // Rút ngắn code
-const express = require('express');
-const router = express.Router();
-const SinhVien = require('../models/sinhVienModels');
+
+const express = require('express')
+const router = express.Router()
+const SinhVien = require('../models/sinhVienModels')
 
 // router lấy danh sách SV và hiển thị form
 router.get('/', async (req, res) => {
     try {
-        const sinhViens = await SinhVien.find();
-        res.render('sinhViens', { sinhViens: sinhViens, sinhVienToEdit: null });
+        const sinhViens = await SinhVien.find()
+        res.render('sinhViens', { sinhViens: sinhViens, sinhVienToEdit: null })
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Cannot connect to Server' });
+        console.log(error)
+        res.status(500).json({ error: 'Cannot connect to Server' })
     }
-});
+})
 
 // Thêm dữ liệu sinh viên
 router.post('/', async (req, res) => {
     const { id, name } = req.body;
     try {
-        const newSinhVien = new SinhVien({ id, name });
-        await newSinhVien.save();
-        res.redirect('/sinhvien');
+        const newSinhVien = new SinhVien({ id, name })
+        await newSinhVien.save()
+        res.redirect('/sinhvien')
     } catch (error) {
-        res.status(500).json({ error: 'Error adding student' });
+        res.status(500).json({ error: 'Error adding student' })
     }
-});
+})
 
 // Routers edit SV
 router.get('/edit/:id', async (req, res) => {
     try {
-        const sinhVien = await SinhVien.findById(req.params.id);
+        const sinhVien = await SinhVien.findById(req.params.id)
         const sinhViens = await SinhVien.find();
-        res.render('sinhViens', { sinhViens: sinhViens, sinhVienToEdit: sinhVien });
+        res.render('sinhViens', { sinhViens: sinhViens, sinhVienToEdit: sinhVien })
     } catch (error) {
-        res.status(500).json({ error: 'Cannot connect to Server' });
+        res.status(500).json({ error: 'Cannot connect to Server' })
     }
-});
+})
 
 // Logic POST Edit SV
 router.post('/edit/:id', async (req, res) => {
-    const { name, id } = req.body;
+    const { name, id } = req.body
     try {
-        const updatedSinhVien = await SinhVien.findByIdAndUpdate(req.params.id, { name, id }, { new: true });
+        const updatedSinhVien = await SinhVien.findByIdAndUpdate(req.params.id, { name, id }, { new: true })
         if (!updatedSinhVien) {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.status(404).json({ error: 'Student not found' })
         }
         res.redirect('/sinhvien');
     } catch (error) {
-        res.status(500).json({ error: 'Error updating student' });
+        res.status(500).json({ error: 'Error updating student' })
+    }
+})
+
+// Xóa sinh viên
+router.post('/delete/:id', async (req, res) => {
+    try {
+        await SinhVien.findByIdAndDelete(req.params.id);
+        res.redirect('/sinhvien');
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting student' });
     }
 });
+
 
 module.exports = router;
 
